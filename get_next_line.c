@@ -4,20 +4,26 @@
 char	*get_next_line(int fd)
 {
 	unsigned int	size;
+	char	*temp;
 	char	*buffer;
 
 	size = 0;
-	while (read(fd, NULL, 1) != 0)
+	temp = malloc(1);
+	while (read(fd, temp, 1) != 0)
 	{
 		size++;
 	}
+	printf("ran\n");
 	buffer = malloc(sizeof(unsigned char) * (size));
 	read(fd, buffer, size);
+	free(temp);
 	return (buffer);
 }
 
 
 //=======================main=========================
+
+#include <fcntl.h>
 
 int	main(void)
 {
@@ -27,6 +33,6 @@ int	main(void)
 	fd = open("test1.txt", O_RDONLY);
 	output = get_next_line(fd);
 	printf("%s\n", output);
-	printf("\n[NED]\n");
-
+	printf("\n[END]\n");
+	free(output);
 }
