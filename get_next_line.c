@@ -3,20 +3,17 @@
 
 char	*get_next_line(int fd)
 {
-	unsigned int	size;
-	char	*temp;
 	char	*buffer;
 
-	size = 0;
-	temp = malloc(1);
-	while (read(fd, temp, 1) != 0)
+	buffer = malloc(sizeof(unsigned char) * (BUFFER_SIZE));
+	if (buffer == NULL)
+		return (NULL);
+	if (read(fd, buffer, BUFFER_SIZE - 1) == 0)
 	{
-		size++;
+		free(buffer);
+		return (NULL);
 	}
-	printf("ran\n");
-	buffer = malloc(sizeof(unsigned char) * (size));
-	read(fd, buffer, size);
-	free(temp);
+	buffer[BUFFER_SIZE - 1] = '\0';
 	return (buffer);
 }
 
@@ -27,12 +24,50 @@ char	*get_next_line(int fd)
 
 int	main(void)
 {
+	int		choice;
 	int		fd;
+	int		chr_count;
 	char	*output;
 
-	fd = open("test1.txt", O_RDONLY);
+	printf("Choose test file 1, 2, or 3: ");
+	scanf("%i", &choice);
+
+	if (choice == 1)
+		fd = open("test1.txt", O_RDONLY);
+	else if (choice == 2)
+		fd = open("test2.txt", O_RDONLY);
+	else if (choice == 3)
+		fd = open("test3.txt", O_RDONLY);
+	else
+	{
+		fd = -42;
+		printf("wtf bro\n");
+		return (1);
+	}
+
+	chr_count = 0;
 	output = get_next_line(fd);
+
+	if (output == NULL)
+	{
+		printf("NULL returned\n");
+		return (1);
+	}
+
 	printf("%s\n", output);
-	printf("\n[END]\n");
+	printf("buffer size: %i\n", BUFFER_SIZE);
+	printf("string length: %li\n", strlen(output));
+	while(chr_count != BUFFER_SIZE)
+	{
+		if (output[chr_count] == '\0')
+			printf("char[%i] = \\0\n", chr_count);
+		else if (output[chr_count] == '\n')
+			printf("char[%i] = \\0\n", chr_count);
+		else
+			printf("char[%i] = %c\n", chr_count, output[chr_count]);
+		chr_count++;
+	}
+
 	free(output);
+	printf("\n[END]\n");
 }
