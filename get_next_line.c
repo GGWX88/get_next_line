@@ -4,14 +4,23 @@
 char	*get_next_line(int fd)
 {
 	char	*buffer;
+	int		counter;
 
 	buffer = malloc(sizeof(unsigned char) * (BUFFER_SIZE));
 	if (buffer == NULL)
 		return (NULL);
-	if (read(fd, buffer, BUFFER_SIZE - 1) == 0)
+	counter = 0;
+	if (read(fd, buffer, BUFFER_SIZE - 1) == 0 && BUFFER_SIZE - 1 != 0)
 	{
 		free(buffer);
 		return (NULL);
+	}
+	while (counter < BUFFER_SIZE)
+	{
+		if (counter - 1 >= 0 && buffer[counter - 1] == '\n')
+		{
+			buffer[counter] = 
+		}
 	}
 	buffer[BUFFER_SIZE - 1] = '\0';
 	return (buffer);
@@ -21,6 +30,7 @@ char	*get_next_line(int fd)
 //=======================main=========================
 
 #include <fcntl.h>
+#include <string.h>
 
 int	main(void)
 {
@@ -29,7 +39,7 @@ int	main(void)
 	int		chr_count;
 	char	*output;
 
-	printf("Choose test file 1, 2, or 3: ");
+	printf("Choose test file: ");
 	scanf("%i", &choice);
 
 	if (choice == 1)
@@ -38,12 +48,15 @@ int	main(void)
 		fd = open("test2.txt", O_RDONLY);
 	else if (choice == 3)
 		fd = open("test3.txt", O_RDONLY);
+	else if (choice == 4)
+		fd = open("test4.txt", O_RDONLY);
 	else
 	{
 		fd = -42;
 		printf("wtf bro\n");
 		return (1);
 	}
+// do check what happens if you open file in write mode (might cause undefined behavior)
 
 	chr_count = 0;
 	output = get_next_line(fd);
@@ -62,7 +75,7 @@ int	main(void)
 		if (output[chr_count] == '\0')
 			printf("char[%i] = \\0\n", chr_count);
 		else if (output[chr_count] == '\n')
-			printf("char[%i] = \\0\n", chr_count);
+			printf("char[%i] = \\n\n", chr_count);
 		else
 			printf("char[%i] = %c\n", chr_count, output[chr_count]);
 		chr_count++;
