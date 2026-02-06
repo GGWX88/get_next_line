@@ -19,10 +19,13 @@ char	*get_next_line(int fd)
 	{
 		if (counter - 1 >= 0 && buffer[counter - 1] == '\n')
 		{
-			buffer[counter] = 
+			buffer[counter] = '\0';
+			break;
 		}
+		counter++;
 	}
-	buffer[BUFFER_SIZE - 1] = '\0';
+	if (counter == BUFFER_SIZE)
+		buffer[BUFFER_SIZE - 1] = '\0';
 	return (buffer);
 }
 
