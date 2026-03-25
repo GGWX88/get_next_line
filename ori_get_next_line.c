@@ -3,47 +3,30 @@
 
 char	*get_next_line(int fd)
 {
-	char		*line;
-	char		*buffer;
-	static char	*overread;
-	int			count;
-	int			count1;
-	static int	extra;
-	int			exit;
+	char	*buffer;
+	int		counter;
 
-	buffer = malloc(sizeof(char) * BUFFER_SIZE);
+	buffer = malloc(sizeof(unsigned char) * (BUFFER_SIZE));
 	if (buffer == NULL)
-		return NULL;
-	count = 0;
-	count1 = 0;
-	exit = 0;
-//check if you overread or nah
-	while (exit != 1 && read(fd, buffer, BUFFER_SIZE) != NULL)
+		return (NULL);
+	counter = 0;
+	if (read(fd, buffer, BUFFER_SIZE - 1) == 0 && BUFFER_SIZE - 1 != 0)
 	{
-		while (count < BUFFER_SIZE)
-		{
-			if (buffer[count] == '\0' || buffer[count] == '\n')
-			{
-				exit = 1;
-				break;
-			}
-			count++;
-		}
+		free(buffer);
+		return (NULL);
 	}
-//save overread characters
-	if (count != BUFFER_SIZE)
+	while (counter < BUFFER_SIZE)
 	{
-		extra = BUFFER_SIZE - count;
-		overread = malloc(sizeof(char) * extra)
-		while (count < BUFFER_SIZE)
+		if (counter - 1 >= 0 && buffer[counter - 1] == '\n')
 		{
-			overread[count1] = buffer[count];
-			count1++;
-			count++;
+			buffer[counter] = '\0';
+			break;
 		}
-		
+		counter++;
 	}
-	
+	if (counter == BUFFER_SIZE)
+		buffer[BUFFER_SIZE - 1] = '\0';
+	return (buffer);
 }
 
 
